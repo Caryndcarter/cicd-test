@@ -1,0 +1,37 @@
+name: Deploy Main
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+# * Do not use ${{ secrets }} in the `env` section other than ACCOUNT_AWS_ROLE_ARN 
+env:
+  AWS_REGION: us-east-1
+  AWS_ROLE_ARN: ${{ secrets.ACCOUNT_AWS_ROLE_ARN }}
+# * Safer to use ${{ secrets }} below
+
+jobs:
+  deploy:
+    name: Deploy to AWS
+    permissions:
+      id-token: write # for aws-actions/configure-aws-credentials
+      contents: read # for actions/checkout
+    runs-on: ubuntu-latest
+    steps:
+      ##
+      # Setup
+      ##
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          role-session-name: DeployRoleForGitHubSession
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - run: aws sts get-caller-identity
