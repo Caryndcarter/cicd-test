@@ -1,5 +1,5 @@
 const { Stack, Duration, RemovalPolicy } = require('aws-cdk-lib');
-import s3 from "aws-cdk-lib/aws-s3";
+const s3 = require("aws-cdk-lib/aws-s3");
 
 class CdkStack extends Stack {
   /**
