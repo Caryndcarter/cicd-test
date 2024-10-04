@@ -36,3 +36,7 @@ jobs:
         uses: actions/checkout@v4
       - run: npm install 
       - run: npm --workspace packages/cdk run cdk -- deploy --require-approval never
+      - run: | 
+          BUCKET_NAME=$(aws cloudformation describe-stacks --stack-name Caryn-test-stack --query "Stacks[0].Outputs[?OutputKey=='DestinationBucketName'].OutputValue" --output text)
+          echo $BUCKET_NAME
+          aws s3 sync --delete ./dist s3://$BUCKET_NAME  

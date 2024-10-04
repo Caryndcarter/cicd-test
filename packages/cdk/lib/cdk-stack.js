@@ -1,4 +1,4 @@
-const { Stack, Duration, RemovalPolicy } = require('aws-cdk-lib');
+const { Stack, Duration, RemovalPolicy, CfnOutput } = require('aws-cdk-lib');
 const s3 = require("aws-cdk-lib/aws-s3");
 
 class CdkStack extends Stack {
@@ -22,6 +22,9 @@ class CdkStack extends Stack {
       websiteErrorDocument: "error.html",
       websiteIndexDocument: "index.html",
     });
+    new CfnOutput (this, 'DestinationBucketName', {
+      value: destinationBucket.bucketName
+    })
 
   }
 }
