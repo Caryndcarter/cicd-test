@@ -71,6 +71,9 @@ bucketDeployRole.addToPolicy(
   }),
 );
 
+new CfnOutput (this, 'DestinationBucketDeployRoleArn', {
+  value: bucketDeployRole.roleArn
+})
 
 
   }
