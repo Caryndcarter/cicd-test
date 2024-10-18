@@ -26,6 +26,50 @@ class CdkStack extends Stack {
       value: destinationBucket.bucketName
     })
 
+// Create an IAM role for GitHub Actions to assume
+const bucketDeployRole = new Role(this, "DestinationBucketDeployRole", {
+  assumedBy: new FederatedPrincipal(
+    Fn.importValue(CDK.IMPORT.OIDC_PROVIDER),
+    {
+      StringLike: {
+        "token.actions.githubusercontent.com:sub": "repo:caryndcarter/cicd-test:*",
+      },
+    },
+    "sts:AssumeRoleWithWebIdentity", // sts:AssumeRoleWithWebIdentity
+  ),
+  maxSessionDuration: Duration.hours(1),
+});
+// Allow the role to write to the bucket
+bucketDeployRole.addToPolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: [
+      "s3:DeleteObject",
+      "s3:GetObject",
+      "s3:ListObjectsV2",
+      "s3:PutObject",
+    ],
+    resources: [`${destinationBucket.bucketArn}/*`],
+  }),
+);
+bucketDeployRole.addToPolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: ["s3:ListBucket"],
+    resources: [`${destinationBucket.bucketArn}`],
+  }),
+);
+// Allow the role to read cloudfromation stacks
+bucketDeployRole.addToPolicy(
+  new PolicyStatement({
+    actions: ["cloudformation:DescribeStacks"],
+    effect: Effect.ALLOW,
+    resources: ["*"], // TODO: restrict to this stack
+  }),
+);
+
+
+
   }
 }
 
