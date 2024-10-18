@@ -1,6 +1,6 @@
 
 const { Stack, Duration, RemovalPolicy, CfnOutput } = require('aws-cdk-lib');
-const { Role } = require('aws-cdk-lib/aws-iam');
+const { Role, PolicyStatement } = require('aws-cdk-lib/aws-iam');
 const s3 = require("aws-cdk-lib/aws-s3");
 
 
