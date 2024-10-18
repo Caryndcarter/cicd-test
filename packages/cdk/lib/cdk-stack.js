@@ -1,6 +1,6 @@
 
-const { Stack, Duration, RemovalPolicy, CfnOutput } = require('aws-cdk-lib');
-const { Role, PolicyStatement } = require('aws-cdk-lib/aws-iam');
+const { Stack, Duration, RemovalPolicy, CfnOutput, Fn } = require('aws-cdk-lib');
+const { Role, PolicyStatement, FederatedPrincipal, Effect } = require('aws-cdk-lib/aws-iam');
 const s3 = require("aws-cdk-lib/aws-s3");
 
 
@@ -32,8 +32,8 @@ class CdkStack extends Stack {
 // Create an IAM role for GitHub Actions to assume
 const bucketDeployRole = new Role(this, "DestinationBucketDeployRole", {
   assumedBy: new FederatedPrincipal(
-    Fn.importValue(CDK.IMPORT.OIDC_PROVIDER),
-    {
+    Fn.importValue('github-oidc-provider'), //find exported value github-oid-provider & use that here
+        {
       StringLike: {
         "token.actions.githubusercontent.com:sub": "repo:caryndcarter/cicd-test:*",
       },
