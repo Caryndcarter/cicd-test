@@ -35,7 +35,8 @@ const bucketDeployRole = new Role(this, "DestinationBucketDeployRole", {
     Fn.importValue('github-oidc-provider'), //find exported value github-oid-provider & use that here
         {
       StringLike: {
-        "token.actions.githubusercontent.com:sub": "repo:caryndcarter/cicd-test:*",
+        "token.actions.githubusercontent.com:sub": "repo:Caryndcarter/cicd-test:*",
+        //"arn:aws:iam::872515280878:oidc-provider/token.actions.githubusercontent.com:sts.amazonaws.com:repo:Caryndcarter/cicd-test:ref:refs/heads/main"
       },
     },
     "sts:AssumeRoleWithWebIdentity", // sts:AssumeRoleWithWebIdentity
